@@ -40,12 +40,12 @@ DEK = ("Russian missiles hit Kyiv's bridges · Cyclone Akvan strikes India · "
        "An AI sell-off sinks Asia's markets · UK and EU seal a deal")
 
 STATS = [
-    ("3", "bridges over the Dnipro\ndamaged in Kyiv"),
-    ("300,000+", "people moved to shelters\nbefore Akvan"),
-    ("-6.2%", "Taiwan's share index,\nFriday's close"),
-    ("100,000", "youth visas a year in the\nUK-EU deal"),
-    ("2.3%", "Japan's consumer inflation\nin October"),
-    ("118", "runs by Glenn Phillips\nagainst India"),
+    ("3", "Dnipro bridges damaged in Kyiv"),
+    ("300,000+", "moved to shelters before Akvan"),
+    ("-6.2%", "Taiwan index, Friday's close"),
+    ("100,000", "youth visas a year, UK-EU deal"),
+    ("2.3%", "Japan inflation in October"),
+    ("118", "Phillips runs against India"),
 ]
 
 REGIONS = [("Europe", 8, (52, 92, 150)), ("Asia", 8, RED),
