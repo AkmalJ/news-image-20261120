@@ -83,10 +83,10 @@ MEDIUMS = [
          strip="Minister says · Reuters",
          head="Russian cruise missile lands in Poland",
          cap="It fell in a field; two airports paused."),
-    dict(n=7, label="CENTRAL IRAQ · SECURITY", art="iraq",
-         strip="Witnessed · Reuters",
-         head="Iraqi army enters a militia stronghold",
-         cap="Troops deploy to Jurf al-Sakhar."),
+    dict(n=7, label="BARCELONA · HEALTH", art="pill",
+         strip="Trial data · Reuters",
+         head="Pancreatic cancer pill shrinks tumours 60.7%",
+         cap="Daraxonrasib + chemo beat chemo alone (23\u201342%)."),
     dict(n=8, label="ITALY · LABOUR", art="italy", strip="Reported · Reuters",
          head="General strike over Italy's budget",
          cap="Workers and students march."),
@@ -133,7 +133,7 @@ BRIEFS = [
     ("Wellington", "Nicholls makes 175 in a stand of 216 (ICC)"),
     ("Sydney", "Australian shares fall 1.6% in the sell-off"),
     ("Antalya", "Panama asks COP31 to cap world oil output"),
-    ("Antalya", "EU official calls the climate draft unacceptable"),
+    ("Baghdad", "Iraqi army enters a militia stronghold (Reuters)"),
 ]
 
 DATE_CHECK = (
@@ -322,6 +322,19 @@ def art_iraq(d, x, y, w, h):
         d.ellipse([tx + 20, ty + 10, tx + 28, ty + 18], fill=INK)
 
 
+def art_pill(d, x, y, w, h):
+    d.rectangle([x, y, x + w, y + h], fill=(238, 240, 238))
+    d.text((x + 7, y + 5), "BARCELONA: PILL", font=F(SANS_B, 13), fill=INK)
+    d.text((x + 7, y + 25), "pancreatic cancer trial", font=F(SANS_B, 9),
+           fill=GREY)
+    cx, cy = x + w - 40, y + 13  # capsule icon, top-right
+    d.rounded_rectangle([cx - 22, cy - 6, cx + 22, cy + 6], radius=6,
+                        fill=(250, 250, 250), outline=INK, width=2)
+    d.ellipse([cx - 22, cy - 6, cx - 10, cy + 6], fill=(64, 110, 180))
+    d.rectangle([cx - 17, cy - 4, cx, cy + 4], fill=(64, 110, 180))
+    d.text((x + w - 63, y + 24), "60.7%", font=F(SANS_B, 12), fill=RED)
+
+
 def art_italy(d, x, y, w, h):
     d.rectangle([x, y, x + w, y + h], fill=(233, 226, 210))
     d.text((x + 7, y + 5), "ITALY: STRIKE", font=F(SANS_B, 14), fill=INK)
@@ -398,7 +411,7 @@ def art_cricket(d, x, y, w, h):
 MED_ART = {"ukeu": art_ukeu, "cop": art_cop, "poland": art_poland,
            "iraq": art_iraq, "italy": art_italy, "japan": art_japan,
            "seoul": art_seoul, "kenya": art_kenya, "bukele": art_bukele,
-           "cricket": art_cricket}
+           "cricket": art_cricket, "pill": art_pill}
 
 
 # ---------------------------------------------------------------- map
@@ -427,7 +440,7 @@ MAP_ROWS = [
     "                                                                ##    ",
 ]
 PINS = {1: (36, 3), 2: (47, 11), 3: (53, 10), 4: (31, 3), 5: (39, 7),
-        6: (34, 4), 7: (42, 8), 8: (33, 6), 9: (57, 8), 10: (54, 7),
+        6: (34, 4), 7: (30, 5), 8: (33, 6), 9: (57, 8), 10: (54, 7),
         11: (39, 14), 12: (7, 11), 13: (64, 20)}
 
 
