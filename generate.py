@@ -48,18 +48,18 @@ STATS = [
     ("118", "runs by Glenn Phillips\nagainst India"),
 ]
 
-REGIONS = [("Europe", 8, (52, 92, 150)), ("Asia", 8, RED),
-           ("Middle East", 3, GOLD), ("Africa", 5, GREEN),
-           ("Americas", 5, PURPLE), ("Oceania", 3, TEAL),
+REGIONS = [("Europe", 8, (52, 92, 150)), ("Asia", 9, RED),
+           ("Middle East", 4, GOLD), ("Africa", 4, GREEN),
+           ("Americas", 4, PURPLE), ("Oceania", 3, TEAL),
            ("Global", 3, (60, 60, 60))]
 
 FEATURES = [
     dict(n=1, label="KYIV, UKRAINE · WAR", art="kyiv",
          tag="Officials' count · Kyiv Independent · BBC",
          head="Russian missiles hit three Kyiv bridges",
-         cap="An overnight barrage of about 110 missiles and 400 drones killed "
-             "at least nine people across Ukraine and cut power and water in "
-             "the capital. (Kyiv Independent, BBC)"),
+         cap="An overnight barrage of more than 110 missiles and more than "
+             "400 drones killed at least eight people across Ukraine and "
+             "damaged the capital's Dnipro bridges. (Kyiv Independent, BBC)"),
     dict(n=2, label="ODISHA, INDIA · CYCLONE", art="akvan",
          tag="Weather office · IMD · Deccan Herald",
          head="Cyclone Akvan comes ashore in eastern India",
@@ -69,9 +69,9 @@ FEATURES = [
     dict(n=3, label="TAIPEI · SEOUL · TOKYO · MARKETS", art="selloff",
          tag="Closing prices · Exchange data · Reuters",
          head="AI sell-off sinks Asia's stock markets",
-         cap="Taiwan's index fell 6.2% to end its worst week since 1991. Seoul "
-             "lost 5.2% and Tokyo 5.1% as chipmakers led the slide. "
-             "(Exchange closes, Reuters)"),
+         cap="Chip stocks led the fall \u2014 Nvidia about 14% lower, AMD about "
+             "13%. Taiwan's index fell 6.2% to end its worst week since 1991; "
+             "Seoul lost 5.2% and Tokyo 5.1%. (Exchange closes, Reuters)"),
 ]
 
 MEDIUMS = [
@@ -82,9 +82,9 @@ MEDIUMS = [
          head="COP31 reaches its last day with no deal",
          cap="The draft text leaves out fossil fuels."),
     dict(n=6, label="EASTERN POLAND · SECURITY", art="poland",
-         strip="Minister says · Reuters",
-         head="Russian cruise missile lands in Poland",
-         cap="It fell in a field; two airports paused."),
+         strip="Deliberate provocation · NATO",
+         head="Two Russian missiles come down in Poland",
+         cap="A suspected drone fell too; NATO jets scrambled."),
     dict(n=7, label="CENTRAL IRAQ · SECURITY", art="iraq",
          strip="Witnessed · Reuters",
          head="Iraqi army enters a militia stronghold",
@@ -115,37 +115,39 @@ MEDIUMS = [
 
 BRIEFS = [
     ("Lviv", "A strike on a railway station kills two (BBC)"),
-    ("Moscow", "Russia declines NATO guarantees for Ukraine"),
+    ("Hormuz", "Tankers catch fire; IEA says energy markets permanently altered"),
     ("Berlin", "School pupils strike against military service"),
-    ("Brussels", "EU adds \u20ac1bn in military aid for Ukraine (EU Council)"),
+    ("New Delhi", "Pakistan minister Malik arrives, first since the 2025 conflict"),
     ("Naypyidaw", "Myanmar's rulers dismiss the genocide ruling (CNN)"),
     ("Beijing", "China holds loan prime rates for an 18th month"),
     ("Seoul", "Kospi ends the week 7.9% lower (Anadolu)"),
     ("Ganjam", "209 mm of rain falls as Akvan crosses (PTI)"),
-    ("Lebanon", "Israeli air strikes hit the south and the east"),
-    ("Yemen", "Gunmen fire on a cargo ship off the coast (UKMTO)"),
+    ("Lebanon", "Israel strikes a Hezbollah missile factory in the Beqaa"),
+    ("Copenhagen", "Parliament ratifies the US security deal on Greenland"),
     ("Abuja", "Court bars new evidence against Tinubu"),
-    ("Kampala", "Police told to enforce Ebola ban on rallies"),
+    ("Riyadh", "Saudis down a Houthi missile, then strike Hudaydah and Sanaa"),
     ("Malawi", "Fuel crisis brings night-long petrol queues"),
     ("Africa", "AfDB says 22 countries are in debt distress"),
     ("Las Vegas", "Russell fastest in wet Grand Prix practice"),
     ("New York", "Nasdaq closes 5.28% lower in the rout (Reuters)"),
-    ("Washington", "Democrats query law firm's free work"),
+    ("Tallinn", "Estonia to shut border crossings with Russia after sabotage"),
     ("New York", "Anthropic falls about 9% to $89 (Reuters)"),
     ("Wellington", "Nicholls makes 175 in a stand of 216 (ICC)"),
     ("Sydney", "Australian shares fall 1.6% in the sell-off"),
-    ("Antalya", "Panama asks COP31 to cap world oil output"),
+    ("Antalya", "Panama-led group demands fossil fuels back in the COP31 draft"),
     ("Antalya", "EU official calls the climate draft unacceptable"),
 ]
 
 DATE_CHECK = (
     "Left out on purpose \u2014 first reported Thursday 19 November: the "
-    "Trump-Xi-Putin summit and declaration in Shenzhen · the World Court's "
-    "Myanmar (Rohingya) ruling · Anthropic's $83 IPO debut (Friday's fall is "
-    "brief 18) · GTA VI's midnight launch · the $190.4m Van Gogh sale · "
-    "Voyager 1's light-day confirmation · Fiona the hippo's death. Not yet: "
+    "Trump-Xi-Putin Shenzhen summit · the World Court's Myanmar (Rohingya) "
+    "ruling · Anthropic's $83 IPO debut (Friday's fall is brief 31) · the "
+    "Senate's 51-48 Iran war-powers vote · the Crimea Bridge strike · the "
+    "Houthi hit on Riyadh's PIF Tower · Tonga's drought emergency · GTA VI's "
+    "launch · the $190.4m Van Gogh sale · Voyager 1's light-day · Fiona's "
+    "death. Not yet: "
     "BepiColombo enters Mercury orbit (Sat 21) · a final COP31 text · the "
-    "ATP Finals final (Sun 22) · Estonia's border closure (1 Dec).")
+    "ATP Finals final (Sun 22).")
 
 FOOTER_L = ("Every story here happened, or was first reported, on Friday "
             "20 November 2026. Officials' counts are attributed.")
@@ -245,7 +247,7 @@ def art_kyiv(d, x, y, w, h):
         d.ellipse([ex - 3, ey - 3, ex + 3, ey + 3], fill=(250, 220, 150))
     bw = chip(d, x + 8, y + 8, "KYIV", F(SANS_B, 21), RED)
     chip(d, x + 8, y + 40, "3 bridges hit", F(SANS_B, 13), (245, 245, 245), INK)
-    chip(d, x + 8, y + 66, "~110 missiles + 400 drones", F(SANS_B, 10), INK)
+    chip(d, x + 8, y + 66, "110+ missiles · 400+ drones", F(SANS_B, 10), INK)
 
 
 def art_akvan(d, x, y, w, h):
@@ -336,8 +338,9 @@ def art_cop(d, x, y, w, h):
 def art_poland(d, x, y, w, h):
     d.rectangle([x, y, x + w, y + h], fill=(196, 214, 178))
     d.rectangle([x, y + h - 14, x + w, y + h], fill=(150, 128, 84))
-    d.text((x + 7, y + 5), "POLAND: MISSILE", font=F(SANS_B, 14), fill=INK)
-    d.text((x + 7, y + 24), "KH-101", font=F(SANS_B, 15), fill=(70, 70, 60))
+    d.text((x + 7, y + 5), "POLAND: MISSILES", font=F(SANS_B, 14), fill=INK)
+    d.text((x + 7, y + 24), "JETS SCRAMBLED", font=F(SANS_B, 13), fill=(70, 70, 60))
+    d.text((x + 7, y + 43), "Patriots activated", font=F(SANS, 9), fill=(70, 70, 60))
     mx, my = x + w - 56, y + 22  # missile body, nose down-left
     d.polygon([(mx, my + 22), (mx + 12, my + 4), (mx + 22, my), (mx + 16, my + 14),
                (mx + 8, my + 26)], fill=(120, 124, 132))
@@ -594,8 +597,8 @@ def compose():
         lines = wrap(d, text, bf, bx + colw - tx)
         d.text((tx, by), lines[0] if lines else "", font=bf, fill=(35, 35, 35))
         for j, ln in enumerate(lines[1:]):
-            d.text((bx + 20, by + 11.5 * (j + 1)), ln, font=bf, fill=(35, 35, 35))
-        col_y[col] = by + 11.5 * len(lines) + 3.5
+            d.text((bx + 20, by + 11.25 * (j + 1)), ln, font=bf, fill=(35, 35, 35))
+        col_y[col] = by + 11.25 * len(lines) + 3.0
     y = max(y + 182, max(col_y)) + 6
 
     # date check (box height follows the wrapped text)
