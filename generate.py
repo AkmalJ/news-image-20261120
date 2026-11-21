@@ -44,14 +44,14 @@ STATS = [
     ("300,000+", "people moved before Akvan"),
     ("-6.2%", "Taiwan index, Friday's close"),
     ("100,000", "youth visas a year, UK-EU deal"),
-    ("2.3%", "Japan inflation in October"),
+    ("60.7%", "patients respond to a cancer pill"),
     ("118", "Phillips runs against India"),
 ]
 
-REGIONS = [("Europe", 8, (52, 92, 150)), ("Asia", 9, RED),
+REGIONS = [("Europe", 9, (52, 92, 150)), ("Asia", 9, RED),
            ("Middle East", 4, GOLD), ("Africa", 4, GREEN),
            ("Americas", 4, PURPLE), ("Oceania", 3, TEAL),
-           ("Global", 3, (60, 60, 60))]
+           ("Global", 2, (60, 60, 60))]
 
 FEATURES = [
     dict(n=1, label="KYIV, UKRAINE · WAR", art="kyiv",
@@ -85,17 +85,20 @@ MEDIUMS = [
          strip="Deliberate provocation · NATO",
          head="Two Russian missiles come down in Poland",
          cap="A suspected drone fell too; NATO jets scrambled."),
-    dict(n=7, label="CENTRAL IRAQ · SECURITY", art="iraq",
-         strip="Witnessed · Reuters",
-         head="Iraqi army enters a militia stronghold",
-         cap="Troops deploy to Jurf al-Sakhar."),
+    dict(n=7, label="KHARG ISLAND · ENERGY", art="hormuz",
+         strip="Staged · ISW",
+         head="Iran stages tankers to run the blockade",
+         cap="14 tankers gather at Kharg Island to try running the US "
+             "blockade; the IEA says the Hormuz crisis has permanently "
+             "altered energy markets."),
     dict(n=8, label="ITALY · LABOUR", art="italy", strip="Reported · Reuters",
          head="General strike over Italy's budget",
          cap="Workers and students march."),
-    dict(n=9, label="TOKYO · ECONOMY", art="japan",
-         strip="Official data · Reuters",
-         head="Japan's inflation picks up to 2.3%",
-         cap="A December rate rise stays in view."),
+    dict(n=9, label="BARCELONA · HEALTH", art="pill",
+         strip="Trial data · EORTC",
+         head="Cancer pill shrinks pancreatic tumours",
+         cap="Daraxonrasib with chemo: tumours shrank in 60.7% of 61 "
+             "patients in an early trial."),
     dict(n=10, label="SEOUL · POLITICS", art="seoul",
          strip="Party decision · Korea Herald",
          head="Korea's ruling party to impeach top judge",
@@ -115,7 +118,7 @@ MEDIUMS = [
 
 BRIEFS = [
     ("Lviv", "A strike on a railway station kills two (BBC)"),
-    ("Hormuz", "Tankers catch fire; IEA says energy markets permanently altered"),
+    ("Tokyo", "Inflation picks up to 2.3%; a December rate rise stays in view (Reuters)"),
     ("Berlin", "School pupils strike against military service"),
     ("New Delhi", "Pakistan minister Malik arrives, first since the 2025 conflict"),
     ("Naypyidaw", "Myanmar's rulers dismiss the genocide ruling (CNN)"),
@@ -129,13 +132,13 @@ BRIEFS = [
     ("Malawi", "Fuel crisis brings night-long petrol queues"),
     ("Africa", "AfDB says 22 countries are in debt distress"),
     ("Las Vegas", "Russell fastest in wet Grand Prix practice"),
-    ("New York", "Nasdaq closes 5.28% lower in the rout (Reuters)"),
+    ("Jurf al-Sakhar", "Iraqi army enters the militia stronghold (Reuters)"),
     ("Tallinn", "Estonia to shut border crossings with Russia after sabotage"),
     ("New York", "Anthropic falls about 9% to $89 (Reuters)"),
     ("Wellington", "Nicholls makes 175 in a stand of 216 (ICC)"),
     ("Sydney", "Australian shares fall 1.6% in the sell-off"),
     ("Antalya", "Panama-led group demands fossil fuels back in the COP31 draft"),
-    ("Antalya", "EU official calls the climate draft unacceptable"),
+    ("Buenos Aires", "Country risk jumps 15% to 1,070 — first close over 1,000 in 13 months (JPM)"),
 ]
 
 DATE_CHECK = (
@@ -435,10 +438,65 @@ def art_cricket(d, x, y, w, h):
     d.line([x + w - 84, y + h - 8, x + w - 58, y + 14], fill=(210, 180, 120), width=5)
 
 
+def art_hormuz(d, x, y, w, h):
+    d.rectangle([x, y, x + w, y + h], fill=(18, 44, 74))
+    d.rectangle([x, y + int(h * 0.62), x + w, y + h], fill=(24, 62, 102))
+    for i in range(5):  # wave lines
+        wy = y + int(h * 0.68) + i * 6
+        d.line([x + 6 + (i % 2) * 9, wy, x + w - 8, wy], fill=(52, 96, 140), width=1)
+    hx, hy = x + int(w * 0.30), y + int(h * 0.60)  # tanker hull
+    d.polygon([(hx, hy), (hx + int(w * 0.44), hy), (hx + int(w * 0.38), hy + 10),
+               (hx + 6, hy + 10)], fill=(12, 14, 18))
+    d.rectangle([hx + 10, hy - 8, hx + int(w * 0.36), hy], fill=(30, 34, 42))
+    d.rectangle([hx + int(w * 0.36), hy - 14, hx + int(w * 0.42), hy], fill=(30, 34, 42))
+    fx, fy = hx + int(w * 0.40), hy - 16  # fire at the stern
+    d.polygon([(fx - 6, fy + 4), (fx, fy - 10), (fx + 6, fy + 4)], fill=(232, 120, 40))
+    d.polygon([(fx - 3, fy + 4), (fx, fy - 5), (fx + 3, fy + 4)], fill=(246, 190, 70))
+    for s in range(3):
+        exx, eyy = fx + 6 + s * 6, fy - 12 - s * 5
+        d.ellipse([exx - 5 + s, eyy - 3, exx + 5 + s, eyy + 3], fill=(96, 104, 122))
+    d.text((x + 7, y + 5), "HORMUZ", font=F(SANS_B, 17), fill=(255, 255, 255))
+    d.text((x + 7, y + 26), "14 tankers staged at Kharg Island", font=F(SANS_B, 9),
+           fill=(170, 205, 235))
+
+
+def art_pill(d, x, y, w, h):
+    d.rectangle([x, y, x + w, y + h], fill=(240, 244, 238))
+    cx, cy = x + 16, y + int(h * 0.30)  # capsule: two halves
+    d.rounded_rectangle([cx, cy, cx + 62, cy + 22], radius=11, fill=(250, 250, 250),
+                        outline=INK, width=2)
+    d.rounded_rectangle([cx, cy, cx + 31, cy + 22], radius=11, fill=RED)
+    d.rectangle([cx + 20, cy + 2, cx + 31, cy + 20], fill=RED)
+    d.text((x + 88, y + 8), "60.7%", font=F(SERIF_B, 24), fill=INK)
+    d.text((x + 89, y + 36), "tumours shrank", font=F(SANS_B, 9), fill=GREY)
+    d.text((x + 7, y + 5), "BARCELONA", font=F(SANS_B, 10), fill=TEAL)
+
+
+def art_pakistan(d, x, y, w, h):
+    d.rectangle([x, y, x + w, y + h], fill=(238, 233, 218))
+    fx, fy, fw_, fh = x + 10, y + 12, 52, 32  # Pakistan flag
+    d.rectangle([fx, fy, fx + fw_, fy + fh], fill=(1, 65, 28))
+    d.rectangle([fx, fy, fx + 13, fy + fh], fill=(245, 245, 245))
+    d.ellipse([fx + 26, fy + 7, fx + 44, fy + 25], fill=(245, 245, 245))
+    d.ellipse([fx + 31, fy + 5, fx + 48, fy + 22], fill=(1, 65, 28))
+    gx = x + w - 62  # India flag
+    d.rectangle([gx, fy, gx + fw_, fy + fh // 3], fill=(240, 140, 50))
+    d.rectangle([gx, fy + fh // 3, gx + fw_, fy + 2 * fh // 3], fill=(248, 248, 248))
+    d.rectangle([gx, fy + 2 * fh // 3, gx + fw_, fy + fh], fill=(20, 110, 50))
+    d.ellipse([gx + fw_ // 2 - 6, fy + fh // 3 + 2, gx + fw_ // 2 + 6,
+               fy + 2 * fh // 3 - 2], outline=(30, 40, 140), width=2)
+    ay = y + h // 2  # double-headed arrow between the flags
+    d.line([fx + fw_ + 6, ay, gx - 6, ay], fill=INK, width=2)
+    d.polygon([(gx - 6, ay), (gx - 13, ay - 4), (gx - 13, ay + 4)], fill=INK)
+    d.polygon([(fx + fw_ + 6, ay), (fx + fw_ + 13, ay - 4), (fx + fw_ + 13, ay + 4)],
+              fill=INK)
+    d.text((x + 7, y + 3), "FIRST SINCE 2025", font=F(SANS_B, 9), fill=RED)
+
+
 MED_ART = {"ukeu": art_ukeu, "cop": art_cop, "poland": art_poland,
            "iraq": art_iraq, "italy": art_italy, "japan": art_japan,
            "seoul": art_seoul, "kenya": art_kenya, "bukele": art_bukele,
-           "cricket": art_cricket}
+           "cricket": art_cricket, "hormuz": art_hormuz, "pill": art_pill}
 
 
 # ---------------------------------------------------------------- map
@@ -467,7 +525,7 @@ MAP_ROWS = [
     "                                                                ##    ",
 ]
 PINS = {1: (36, 3), 2: (47, 11), 3: (53, 10), 4: (31, 3), 5: (39, 7),
-        6: (34, 4), 7: (42, 8), 8: (33, 6), 9: (57, 8), 10: (54, 7),
+        6: (34, 4), 7: (43, 8), 8: (33, 6), 9: (31, 5), 10: (54, 7),
         11: (39, 14), 12: (7, 11), 13: (64, 20)}
 
 
