@@ -54,18 +54,20 @@ REGIONS = [("Europe", 8, (52, 92, 150)), ("Asia", 8, RED),
            ("Global", 3, (60, 60, 60))]
 
 FEATURES = [
-    dict(n=1, label="KYIV, UKRAINE · WAR", art="kyiv", tag="Officials' count",
+    dict(n=1, label="KYIV, UKRAINE · WAR", art="kyiv",
+         tag="Officials' count · Kyiv Independent · BBC",
          head="Russian missiles hit three Kyiv bridges",
          cap="An overnight barrage of about 110 missiles and 400 drones killed "
              "at least nine people across Ukraine and cut power and water in "
              "the capital. (Kyiv Independent, BBC)"),
-    dict(n=2, label="ODISHA, INDIA · CYCLONE", art="akvan", tag="Weather office",
+    dict(n=2, label="ODISHA, INDIA · CYCLONE", art="akvan",
+         tag="Weather office · IMD · Deccan Herald",
          head="Cyclone Akvan comes ashore in eastern India",
          cap="The storm crossed the coast near Gopalpur from about 8 am after "
              "more than 300,000 people were moved to shelters. No deaths were "
              "reported. (IMD, Deccan Herald)"),
     dict(n=3, label="TAIPEI · SEOUL · TOKYO · MARKETS", art="selloff",
-         tag="Closing prices",
+         tag="Closing prices · Exchange data · Reuters",
          head="AI sell-off sinks Asia's stock markets",
          cap="Taiwan's index fell 6.2% to end its worst week since 1991. Seoul "
              "lost 5.2% and Tokyo 5.1% as chipmakers led the slide. "
@@ -195,16 +197,39 @@ def art_kyiv(d, x, y, w, h):
         sx, sy = x + rng.randrange(w), y + rng.randrange(int(h * 0.5))
         d.point((sx, sy), fill=(200, 210, 235))
     river_y = y + int(h * 0.72)
+    # two-layer skyline on the far bank, back layer taller and darker
+    for bx, bw_, bh, col in ((0.02, 30, 34, (26, 40, 68)), (0.13, 22, 44, (26, 40, 68)),
+                             (0.30, 34, 30, (26, 40, 68)), (0.55, 26, 40, (26, 40, 68)),
+                             (0.68, 36, 32, (26, 40, 68)), (0.86, 28, 42, (26, 40, 68))):
+        d.rectangle([x + int(w * bx), river_y - bh, x + int(w * bx) + bw_, river_y],
+                    fill=col)
+    for bx, bw_, bh in ((0.06, 20, 24), (0.22, 16, 30), (0.42, 24, 22),
+                        (0.60, 18, 27), (0.76, 22, 20), (0.92, 16, 26)):
+        x0 = x + int(w * bx)
+        d.rectangle([x0, river_y - bh, x0 + bw_, river_y], fill=(34, 52, 84))
+        for _ in range(6):  # lit windows
+            wx = x0 + 2 + rng.randrange(max(3, bw_ - 5))
+            wy = river_y - bh + 3 + rng.randrange(max(3, bh - 6))
+            d.rectangle([wx, wy, wx + 2, wy + 3], fill=(246, 200, 110))
     d.rectangle([x, river_y, x + w, y + h], fill=(24, 52, 92))
-    for bx in (0.16, 0.47, 0.78):  # three bridges: deck + towers + arc
+    d.text((x + w - 62, river_y + 8), "DNIPRO", font=F(SANS_B, 10),
+           fill=(150, 185, 225))
+    for bx in (0.16, 0.47, 0.78):  # three bridges: deck + towers + arc + cables
         cx = x + int(w * bx)
         d.line([cx - 52, river_y, cx + 52, river_y], fill=(150, 170, 205), width=3)
         for tx in (cx - 34, cx + 30):
             d.rectangle([tx, river_y - 34, tx + 5, river_y], fill=(150, 170, 205))
+            for ex in (cx - 46, cx - 20, cx + 18, cx + 44):  # cable stays
+                d.line([tx + 2, river_y - 33, ex, river_y - 1],
+                       fill=(110, 135, 180), width=1)
         d.arc([cx - 48, river_y - 26, cx + 48, river_y + 14], 180, 360,
               fill=(120, 145, 190), width=2)
-    for i, fx in enumerate((0.16, 0.47, 0.78)):  # fires on the bridge decks
+    for i, fx in enumerate((0.16, 0.47, 0.78)):  # fires + smoke on the decks
         cx, cy = x + int(w * fx), river_y - 2 - (i % 2) * 5
+        for s in range(3):  # smoke plume: stacked soft ellipses drifting right
+            exx, eyy = cx + 5 + s * 7, cy - 24 - s * 7
+            d.ellipse([exx - 6 + s * 2, eyy - 4, exx + 6 + s * 2, eyy + 4],
+                      fill=(88, 96, 118))
         d.polygon([(cx - 8, cy), (cx, cy - 20), (cx + 8, cy)], fill=(232, 120, 40))
         d.polygon([(cx - 4, cy), (cx, cy - 11), (cx + 4, cy)], fill=(246, 190, 70))
     for i in range(3):  # missile trails
@@ -220,17 +245,28 @@ def art_kyiv(d, x, y, w, h):
         d.ellipse([ex - 3, ey - 3, ex + 3, ey + 3], fill=(250, 220, 150))
     bw = chip(d, x + 8, y + 8, "KYIV", F(SANS_B, 21), RED)
     chip(d, x + 8, y + 40, "3 bridges hit", F(SANS_B, 13), (245, 245, 245), INK)
+    chip(d, x + 8, y + 66, "~110 missiles + 400 drones", F(SANS_B, 10), INK)
 
 
 def art_akvan(d, x, y, w, h):
     d.rectangle([x, y, x + w, y + h], fill=(168, 208, 224))
-    land = [(x, y + h), (x, y + int(h * 0.30)), (x + int(w * 0.30), y + int(h * 0.38)),
+    land = [(x, y + h), (x, y + int(h * 0.30)), (x + int(w * 0.16), y + int(h * 0.33)),
+            (x + int(w * 0.24), y + int(h * 0.30)), (x + int(w * 0.30), y + int(h * 0.38)),
+            (x + int(w * 0.37), y + int(h * 0.44)), (x + int(w * 0.33), y + int(h * 0.52)),
             (x + int(w * 0.44), y + int(h * 0.58)), (x + int(w * 0.40), y + h)]
     d.polygon(land, fill=(226, 205, 160))
+    for i in range(9):  # hatch texture on the land
+        hx = x + 8 + i * 11
+        d.line([hx, y + h - 8, hx + 8, y + h - 22], fill=(206, 182, 132), width=2)
     cx, cy = x + int(w * 0.66), y + int(h * 0.52)
-    for r, col in ((44, (70, 130, 170)), (33, (90, 150, 190)), (22, (120, 175, 210)),
-                   (12, (240, 246, 250))):
+    for r, col in ((52, (96, 152, 186)), (44, (70, 130, 170)), (33, (90, 150, 190)),
+                   (22, (120, 175, 210)), (12, (240, 246, 250))):
         d.arc([cx - r, cy - r, cx + r, cy + r], 20, 320, fill=col, width=5)
+    rng = random.Random(11)
+    for _ in range(26):  # rain streaks under the storm's east side
+        rx = cx + rng.randrange(-8, int(w * 0.30))
+        ry = cy + rng.randrange(-16, int(h * 0.30))
+        d.line([rx, ry, rx - 4, ry + 7], fill=(110, 160, 195), width=2)
     d.line([cx - 52, cy + 30, x + int(w * 0.36), y + int(h * 0.60)],
            fill=RED, width=3)
     d.polygon([(x + int(w * 0.36), y + int(h * 0.60)), (x + int(w * 0.36) + 11,
@@ -241,6 +277,7 @@ def art_akvan(d, x, y, w, h):
     d.text((gx - 8, gy + 7), "GOPALPUR", font=F(SANS_B, 10), fill=INK)
     d.text((x + int(w * 0.47), y + 8), "CYCLONE AKVAN", font=F(SANS_B, 17), fill=RED)
     chip(d, x + int(w * 0.47), y + 34, "Landfall · 8 am", F(SANS_B, 12), INK)
+    chip(d, x + 8, y + 8, "300,000+ moved", F(SANS_B, 10), INK)
 
 
 def art_selloff(d, x, y, w, h):
@@ -270,8 +307,7 @@ def art_selloff(d, x, y, w, h):
 def art_ukeu(d, x, y, w, h):
     d.rectangle([x, y, x + w, y + h], fill=NAVY)
     d.text((x + 7, y + 5), "UK-EU DEAL", font=F(SANS_B, 16), fill=(255, 255, 255))
-    d.text((x + 7, y + 27), "100,000 visas a year", font=F(SANS_B, 10),
-           fill=(190, 205, 235))
+    d.text((x + 7, y + 22), "100,000", font=F(SANS_B, 19), fill=(255, 255, 255))
     fx, fy, fw, fh = x + w - 62, y + 8, 54, 38  # simplified Union Jack
     d.rectangle([fx, fy, fx + fw, fy + fh], fill=(30, 60, 140))
     d.line([fx, fy, fx + fw, fy + fh], fill=(255, 255, 255), width=5)
@@ -285,7 +321,8 @@ def art_ukeu(d, x, y, w, h):
 def art_cop(d, x, y, w, h):
     d.rectangle([x, y, x + w, y + h], fill=(240, 226, 190))
     d.text((x + 7, y + 5), "COP31: NO DEAL", font=F(SANS_B, 14), fill=INK)
-    d.text((x + 7, y + 25), "$120bn adaptation gap", font=F(SANS_B, 9), fill=GREY)
+    d.text((x + 7, y + 24), "$120bn", font=F(SANS_B, 17), fill=INK)
+    d.text((x + 70, y + 30), "adaptation gap", font=F(SANS, 9), fill=GREY)
     cx, cy = x + w - 50, y + 19
     d.ellipse([cx - 13, cy - 13, cx + 13, cy + 13], outline=(60, 110, 160), width=3)
     d.ellipse([cx - 5, cy - 13, cx + 5, cy + 13], outline=(60, 110, 160), width=2)
@@ -300,7 +337,7 @@ def art_poland(d, x, y, w, h):
     d.rectangle([x, y, x + w, y + h], fill=(196, 214, 178))
     d.rectangle([x, y + h - 14, x + w, y + h], fill=(150, 128, 84))
     d.text((x + 7, y + 5), "POLAND: MISSILE", font=F(SANS_B, 14), fill=INK)
-    d.text((x + 7, y + 25), "KH-101 · in a field", font=F(SANS_B, 9), fill=(70, 70, 60))
+    d.text((x + 7, y + 24), "KH-101", font=F(SANS_B, 15), fill=(70, 70, 60))
     mx, my = x + w - 56, y + 22  # missile body, nose down-left
     d.polygon([(mx, my + 22), (mx + 12, my + 4), (mx + 22, my), (mx + 16, my + 14),
                (mx + 8, my + 26)], fill=(120, 124, 132))
@@ -313,7 +350,7 @@ def art_poland(d, x, y, w, h):
 def art_iraq(d, x, y, w, h):
     d.rectangle([x, y, x + w, y + h], fill=(216, 196, 158))
     d.text((x + 7, y + 5), "IRAQ: ARMY IN", font=F(SANS_B, 15), fill=INK)
-    d.text((x + 7, y + 26), "first since 2014", font=F(SANS_B, 10), fill=(96, 82, 58))
+    d.text((x + 7, y + 26), "FIRST SINCE 2014", font=F(SANS_B, 11), fill=(96, 82, 58))
     for i, tx in enumerate((x + w - 96, x + w - 58)):  # two trucks
         ty = y + h - 24
         d.rectangle([tx, ty, tx + 30, ty + 12], fill=(96, 100, 74))
@@ -328,15 +365,15 @@ def art_italy(d, x, y, w, h):
     sx = x + w - 88
     d.rectangle([sx, y + 6, sx + 82, y + 22], fill=RED)
     d.text((sx + 6, y + 9), "SCIOPERO", font=F(SANS_B, 11), fill=(255, 255, 255))
-    for i in range(6):  # crowd heads
-        hx = x + w - 96 + i * 15
+    for i in range(8):  # crowd heads
+        hx = x + w - 104 + i * 12
         d.ellipse([hx, y + h - 18, hx + 9, y + h - 9], fill=INK)
         d.rectangle([hx + 1, y + h - 9, hx + 8, y + h - 2], fill=INK)
 
 
 def art_japan(d, x, y, w, h):
     d.rectangle([x, y, x + w, y + h], fill=(243, 240, 232))
-    d.text((x + 7, y + 5), "JAPAN: +2.3%", font=F(SANS_B, 15), fill=INK)
+    d.text((x + 7, y + 5), "JAPAN: +2.3%", font=F(SANS_B, 17), fill=INK)
     d.text((x + 7, y + 26), "October CPI · core 2.2%", font=F(SANS_B, 10), fill=GREY)
     bx = x + w - 92
     for i, bh in enumerate((10, 16, 24, 33)):
@@ -348,7 +385,7 @@ def art_japan(d, x, y, w, h):
 def art_seoul(d, x, y, w, h):
     d.rectangle([x, y, x + w, y + h], fill=(226, 220, 204))
     d.text((x + 7, y + 5), "SEOUL: IMPEACH", font=F(SANS_B, 14), fill=INK)
-    d.text((x + 7, y + 25), "the chief justice", font=F(SANS_B, 9), fill=GREY)
+    d.text((x + 7, y + 25), "THE CHIEF JUSTICE", font=F(SANS_B, 10), fill=(70, 66, 58))
     bx = x + w - 52  # courthouse columns
     d.polygon([(bx, y + 10), (bx + 44, y + 10), (bx + 22, y + 2)], fill=(120, 116, 104))
     for i in range(4):
@@ -363,7 +400,7 @@ def art_seoul(d, x, y, w, h):
 def art_kenya(d, x, y, w, h):
     d.rectangle([x, y, x + w, y + h], fill=(238, 214, 170))
     d.text((x + 7, y + 5), "KENYA: OIL", font=F(SANS_B, 15), fill=INK)
-    d.text((x + 7, y + 26), "Turkana · well No. 1", font=F(SANS_B, 10), fill=(110, 90, 55))
+    d.text((x + 7, y + 26), "WELL No. 1", font=F(SANS_B, 11), fill=(96, 76, 44))
     dx, dy = x + w - 62, y + 6  # derrick
     d.polygon([(dx, dy + 40), (dx + 13, dy), (dx + 26, dy + 40)], outline=INK, width=2)
     d.line([dx + 4, dy + 27, dx + 22, dy + 27], fill=INK, width=2)
@@ -374,7 +411,7 @@ def art_kenya(d, x, y, w, h):
 def art_bukele(d, x, y, w, h):
     d.rectangle([x, y, x + w, y + h], fill=NAVY)
     d.text((x + 7, y + 5), "BUKELE: 3RD BID", font=F(SANS_B, 15), fill=(255, 255, 255))
-    d.text((x + 7, y + 26), "vote 28 Feb 2027", font=F(SANS_B, 10), fill=(190, 205, 235))
+    d.text((x + 7, y + 26), "VOTE 28 FEB 2027", font=F(SANS_B, 11), fill=(230, 238, 250))
     bx, by = x + w - 66, y + h - 26  # ballot box + paper
     d.rectangle([bx, by, bx + 44, by + 20], fill=(240, 240, 240))
     d.rectangle([bx + 8, by + 4, bx + 36, by + 7], fill=INK)
@@ -385,7 +422,7 @@ def art_bukele(d, x, y, w, h):
 
 def art_cricket(d, x, y, w, h):
     d.rectangle([x, y, x + w, y + h], fill=GREEN)
-    d.text((x + 7, y + 5), "PHILLIPS: 118", font=F(SANS_B, 15), fill=(255, 255, 255))
+    d.text((x + 7, y + 5), "PHILLIPS: 118", font=F(SANS_B, 17), fill=(255, 255, 255))
     d.text((x + 7, y + 26), "v India · Wellington", font=F(SANS_B, 10),
            fill=(205, 235, 210))
     for i in range(3):  # stumps
@@ -542,6 +579,7 @@ def compose():
     # briefs in two columns, cumulative heights so wrapped lines never collide
     bf = F(SANS, 10)
     bfb = F(SANS_B, 10)
+    place_cols = [RED, (52, 92, 150), GREEN, TEAL, PURPLE, (150, 96, 20)]
     colw = (CW - 344 - 16) / 2
     col_y = [y, y]
     for i, (place, text) in enumerate(BRIEFS):
@@ -551,7 +589,7 @@ def compose():
         num = str(14 + i)
         d.text((bx, by), num, font=F(SANS_B, 10), fill=RED)
         tx = bx + 20
-        d.text((tx, by), place, font=bfb, fill=INK)
+        d.text((tx, by), place, font=bfb, fill=place_cols[i % len(place_cols)])
         tx += tw(d, place, bfb) + 3
         lines = wrap(d, text, bf, bx + colw - tx)
         d.text((tx, by), lines[0] if lines else "", font=bf, fill=(35, 35, 35))
